@@ -17,26 +17,26 @@ def test_get_users():
 def test_create_user():
     response = client.post(
         "/register/",
-        json={"username": "testuser", "email": "testuser@example.com", "full_name": "Test User", "password": "password123"},
+        json={"username": "usertest", "email": "usertest@gmail.com", "full_name": "User Test", "password": "password1"},
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["username"] == "testuser"
-    assert data["email"] == "testuser@example.com"
+    assert data["username"] == "usertest"
+    assert data["email"] == "usertest@gmail.com"
 
 def test_register_duplicate_username():
     response = client.post(
         "/register/",
-        json={"username": "duplicateuser", "email": "first@example.com", "full_name": "First User", "password": "password123"},
+        json={"username": "duplicateuser", "email": "first@gmail.com", "full_name": "First User", "password": "password1"},
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["username"] == "testuser"
-    assert data["email"] == "testuser@example.com"
+    assert data["username"] == "usertest"
+    assert data["email"] == "usertest@gmail.com"
 
     response = client.post(
         "/register/",
-        json={"username": "duplicateuser", "email": "second@example.com", "full_name": "Second User", "password": "password123"},
+        json={"username": "duplicateuser", "email": "second@gmail.com", "full_name": "Second User", "password": "password1"},
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "Username or Email already registered!"
@@ -45,13 +45,13 @@ def test_register_duplicate_username():
 def test_login_success():
     client.post(
         "/register/",
-        json={"username": "testuser", "email": "testuser@example.com", "full_name": "Test User",
-              "password": "password123"}
+        json={"username": "usertest", "email": "usertest@gmial.com", "full_name": "User Test",
+              "password": "password1"}
     )
 
     response = client.post(
         "/token",
-        data={"username": "testuser", "password": "password123"}
+        data={"username": "usertest", "password": "password1"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -61,14 +61,14 @@ def test_login_success():
 def test_login_invalid_credentials():
     response = client.post(
         "/token",
-        data={"username": "wronguser", "password": "password123"}
+        data={"username": "wronguser", "password": "password1"}
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
 
     response = client.post(
         "/token",
-        data={"username": "testuser", "password": "wrongpassword"}
+        data={"username": "usertest", "password": "wrongpassword"}
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
@@ -76,11 +76,11 @@ def test_login_invalid_credentials():
 def test_login_with_expired_token():
     response = client.post(
         "/register/",
-        json={"username": "testuser", "email": "testuser@example.com", "full_name": "Test User", "password": "password123"}
+        json={"username": "usertest", "email": "usertest@gmail.com", "full_name": "User Test", "password": "password1"}
     )
     response = client.post(
         "/token",
-        data={"username": "testuser", "password": "password123"}
+        data={"username": "usertest", "password": "password1"}
     )
     token = response.json()["access_token"]
 
@@ -119,21 +119,21 @@ def test_get_users_correct_data():
     assert "username" in data[0]
     assert "email" in data[0]
 
-    assert data[0]["username"] == "Fabon"
-    assert data[0]["email"] == "fabon@mail.ru"
+    assert data[0]["username"] == "Danya"
+    assert data[0]["email"] == "danya@gmail.ru"
 
 
 def test_get_current_user():
     response = client.post(
         "/register/",
-        json={"username": "testuser", "email": "testuser@example.com", "full_name": "Test User",
-              "password": "password123"}
+        json={"username": "usertest", "email": "usertest@gmail.com", "full_name": "User Test",
+              "password": "password1"}
     )
     assert response.status_code == 200
 
     response = client.post(
         "/token",
-        data={"username": "testuser", "password": "password123"}
+        data={"username": "usertest", "password": "password1"}
     )
     assert response.status_code == 200
     token = response.json()["access_token"]
@@ -146,6 +146,6 @@ def test_get_current_user():
     assert response.status_code == 200
 
     data = response.json()
-    assert data["username"] == "testuser"
-    assert data["email"] == "testuser@example.com"
-    assert data["full_name"] == "Test User"
+    assert data["username"] == "usertest"
+    assert data["email"] == "usertest@gmial.com"
+    assert data["full_name"] == "User User"
